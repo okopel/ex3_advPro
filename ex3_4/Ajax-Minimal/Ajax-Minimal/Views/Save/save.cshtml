@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "save";
+}
+<style>
+    #bg {
+        background-image: url("/Content/map.png");
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: top;
+    }
+</style>
+
+<script>
+    var IntervalTime = @Session["time"] * 1000;
+    var timeOutTime = @Session["timeOut"]* 1000;
+    var isOver = false;
+    myTimer = (function () {
+        $.post("@Url.Action("GetArgs")").done(function (xml) { get(xml);  });
+    });
+
+    myOverChecker = (function () {    if (!isOver) {  myTimer();  }     });
+
+    setInterval(myOverChecker, IntervalTime);
+     myTimeOut = (function () {
+         $.post("@Url.Action("SaveArgs")").done(function (s) {
+            alert(s);
+            isOver = true;
+            $("#lonn").text("End Of record");
+            $("#latt").text("Nice to see you");
+            $("#plain").hide();
+            IntervalTime = 99999;
+        });
+    });
+     
+    setTimeout(myTimeOut, timeOutTime);
+</script>

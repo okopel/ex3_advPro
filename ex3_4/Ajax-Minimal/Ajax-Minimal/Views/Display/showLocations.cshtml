@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "showLocations";
+}
+<script>
+    myUpdate = (function () {
+        $.post("@Url.Action("GetArgs")").done(function (xml) {
+            get(xml);
+                    });
+    });
+    var IntervalTime = @Session["time"] * 1000
+    setInterval(myUpdate, IntervalTime);
+</script>

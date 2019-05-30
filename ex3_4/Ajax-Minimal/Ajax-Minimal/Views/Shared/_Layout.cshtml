@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Ori And Shlomo</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <style>
+        #bg {
+            background-image: url("../../../Content/map.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+           
+        }
+
+        #mydiv {
+            background-color: white;
+            right: 0px;
+            bottom: 0px;
+            position: fixed;
+        }
+
+
+        #param {
+            float:left;
+            font-size: 12px;
+            font-family: Arial;
+            font-weight: bold;
+            border: 3px solid #ff0000;
+        }
+
+
+        #plain {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            height: 20px;
+        }
+        #screen {
+
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            border: solid #ff0000;
+            border-width: 3px;
+        }
+    
+    </style>
+</head>
+<body id="bg">
+    <div id="screen">
+    </div>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script id="getXml">
+        function get(xml) {
+            var xmlDoc = $.parseXML(xml),
+                $xml = $(xmlDoc),
+                Lats = $xml.find("lat").text();
+            Lons = $xml.find("lon").text();
+            thr = $xml.find("throttle").text();
+            $("#thr").text("throttle:" + thr);
+            rad = $xml.find("rudder").text();
+            $("#rudder").text("rudder:" + rad);
+            Lat = Lats % 180;
+            Lon = Lons % 360;
+            if (Lon > 180) {
+                Lon -= 360;
+            } else if (Lon < -180) {
+                Lon += 360;
+            }
+            if (Lat > 90) {
+                Lat -= 180;
+            } else if (Lat < -90) {
+                Lat += 180;
+            }
+            w = $("#screen").width();
+            h = $("#screen").height();
+            Lat = (h / 2) + ((Lat / 90) * (h / 2));
+            Lon = (w / 2) + ((Lon / 180) * (w / 2));
+            $("#latt").text("lat:" + Lats);
+            $("#lonn").text("lon:" + Lons);
+            $("#plain").css({ 'left': Lon + 'px', 'top': Lat + 'px' });
+        }
+    </script>
+    <img src="~/Content/plain.png" id="plain"/>
+    <div id="param">
+        <p type="text" id="latt"></p>
+        <p type="text" id="lonn"></p>
+        <p type="text" id="thr"></p>
+        <p type="text" id="rudder"></p>
+    </div>
+    @RenderBody()
+
+
+
+
+
+    <div id="mydiv">
+        <a href="http://localhost:26111/">HOME</a><br />
+        <a href="http://localhost:26111/display/127.0.0.1/5400/1">show Locations real</a><br />
+        <a href="http://localhost:26111/display/127.0.0.1/5400">show one Location real</a><br />
+        <a href="http://localhost:26111/save/127.0.0.1/5400/1/5/myFile">save real</a><br />
+        <a href="http://localhost:26111/display/123/5400/1">show Locations dummy</a><br />
+        <a href="http://localhost:26111/display/myFile/1">play</a><br />
+        <a href="http://localhost:26111/save/123/5400/1/5/myFile">save dummy</a><br />
+    </div>
+
+</body>
+</html>

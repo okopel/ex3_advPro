@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "showOneLocation";
+}
+
+
+<script>
+    myTimer = (function () {
+        $.post("@Url.Action("GetArgs")").done(function (xml) {
+            get(xml);
+        });
+    });
+    myTimer();
+
+</script>
+
+
