@@ -15,23 +15,22 @@
     var IntervalTime = @Session["time"] * 1000;
     var timeOutTime = @Session["timeOut"]* 1000;
     var isOver = false;
-    myTimer = (function () {
-        $.post("@Url.Action("GetArgs")").done(function (xml) { get(xml);  });
-    });
 
-    myOverChecker = (function () {    if (!isOver) {  myTimer();  }     });
+    myOverChecker = (function () {
+        if (!isOver) { $.post("@Url.Action("GetArgs")").done(function (xml) { get(xml); }); }
+    });
 
     setInterval(myOverChecker, IntervalTime);
-     myTimeOut = (function () {
+    myTimeOut = (function () {
+        isOver = true;
+        $("#lonn").text("End Of record");
+        $("#latt").text("Nice to see you");
+        $("#plain").hide();
+        IntervalTime = 99999;
          $.post("@Url.Action("SaveArgs")").done(function (s) {
             alert(s);
-            isOver = true;
-            $("#lonn").text("End Of record");
-            $("#latt").text("Nice to see you");
-            $("#plain").hide();
-            IntervalTime = 99999;
         });
     });
-     
+
     setTimeout(myTimeOut, timeOutTime);
 </script>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace Ex3
@@ -13,18 +9,22 @@ namespace Ex3
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            // display one location
             routes.MapRoute("showLocations", "display/{ip}/{port}/{time}",
             defaults: new { controller = "Display", action = "showLocations" });
 
+            // display dynamic location
             routes.MapRoute("showOneLocation", "display/{ip}/{port}",
-           defaults: new { controller = "Display", action = "showOneLocation" });
+            defaults: new { controller = "Display", action = "showOneLocation" });
 
+            // save
             routes.MapRoute(
                name: "save",
                url: "save/{ip}/{port}/{time}/{len}/{fileName}",
                defaults: new { controller = "Save", action = "save" }
-           );
+            );
 
+            // Default
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

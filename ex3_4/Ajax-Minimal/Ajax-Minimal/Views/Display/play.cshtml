@@ -12,22 +12,23 @@
 <script>
     var isOver = false;
     var IntervalTime = @Session["time"] * 1000;
-    myTimer = (function () {
-        $.post("@Url.Action("GetOneArg")").done(function (xml) { 
-            get(xml);
-            l = $("#lonn").text();
-            if ( l== "lon:") { 
-                isOver = true;
-                alert("The play has finish");
-                $("#lonn").text("bye bye");
-                $("#plain").hide();
-                IntervalTime = 99999;
-                $.post("@Url.Action("closeReader")");
-            }    
-        });
+
+    myPlayer = (function (){
+         if (!isOver) {
+             $.post("@Url.Action("GetOneArg")").done(function (xml) {
+                get(xml);
+                l = $("#lonn").text();
+                if ( l == "lon:") {
+                    isOver = true;
+                    $("#lonn").text("bye bye");
+                    $("#plain").hide();
+                    IntervalTime = 99999;
+                    alert("The play has finish");
+                    $.post("@Url.Action("closeReader")");
+                }
+             });
+        }
     });
 
-    myPlayer = (function () { if (!isOver) { myTimer();}} );
-    
     setInterval(myPlayer, IntervalTime);
 </script>

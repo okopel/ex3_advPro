@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Web;
 using System.Xml;
 
 namespace Ex3.Models
@@ -14,49 +11,45 @@ namespace Ex3.Models
     {
         private TcpClient client;
         private bool _isConnected;
-        public string ip { get; set; }
-        public string LastName { get; set; }
-        public int port { get; set; }
         public double lat { get { return getData("/position/latitude-deg"); } }
         public double lon { get { return getData("/position/longitude-deg"); } }
         public double throttle { get { return getData("/controls/engines/current-engine/throttle"); } }
         public double rudder { get { return getData("/controls/flight/rudder"); } }
 
-
+        // create XML file
         public void ToXml(XmlWriter writer,bool toFile)
         {
-            double la = this.lat;
-            double lo = this.lon;
-            double th = this.throttle;
-            double ra = this.rudder;
+            string la = this.lat.ToString();
+            string lo = this.lon.ToString();
+            string th = this.throttle.ToString();
+            string ra = this.rudder.ToString();
             if (toFile)
             {
                 InfoModel.Instance.addToXml(la, lo, th, ra);
             }
             writer.WriteStartElement("client");
-            writer.WriteElementString("lat", la.ToString());
-            writer.WriteElementString("lon", lo.ToString());
-            writer.WriteElementString("throttle", th.ToString());
-            writer.WriteElementString("rudder", ra.ToString());
+            writer.WriteElementString("lat", la);
+            writer.WriteElementString("lon", lo);
+            writer.WriteElementString("throttle", th);
+            writer.WriteElementString("rudder", ra);
             writer.WriteEndElement();
         }
 
 
-
+        // load XML
         public string getArgs(bool toFile)
         {
             StringBuilder sb = new StringBuilder();
             XmlWriterSettings settings = new XmlWriterSettings();
             XmlWriter writer = XmlWriter.Create(sb, settings);
             writer.WriteStartDocument();
-
             ToXml(writer,toFile);
-
             writer.WriteEndDocument();
             writer.Flush();
             return sb.ToString();
         }
 
+        // open client
         public void openClient()
         {
             if (client != null && client.Connected && _isConnected)
@@ -76,6 +69,7 @@ namespace Ex3.Models
             _isConnected = true;
         }
 
+        // send http get request to simulator
         private string askDataFromServer(string msg)
         {
             // send stream

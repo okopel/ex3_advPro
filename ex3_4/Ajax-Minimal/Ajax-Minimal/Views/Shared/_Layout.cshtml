@@ -18,7 +18,6 @@
             left: 0;
             right: 0;
             margin: auto;
-           
         }
 
         #mydiv {
@@ -37,13 +36,6 @@
             border: 3px solid #ff0000;
         }
 
-
-        #plain {
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            height: 20px;
-        }
         #screen {
 
             position: absolute;
@@ -55,12 +47,26 @@
             border: solid #ff0000;
             border-width: 3px;
         }
+
+        #myCanvas {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            border: solid #00ff21;
+            border-width: 3px;
+            width: 100%;
+            height: 100%;
+        }
     
     </style>
 </head>
 <body id="bg">
-    <div id="screen">
-    </div>
+    <div id="screen"></div>
+    <canvas id="myCanvas" width="300" height="150" ></canvas>
+
 
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -71,31 +77,38 @@
                 Lats = $xml.find("lat").text();
             Lons = $xml.find("lon").text();
             thr = $xml.find("throttle").text();
-            $("#thr").text("throttle:" + thr);
             rad = $xml.find("rudder").text();
-            $("#rudder").text("rudder:" + rad);
-            Lat = Lats % 180;
-            Lon = Lons % 360;
-            if (Lon > 180) {
-                Lon -= 360;
-            } else if (Lon < -180) {
-                Lon += 360;
-            }
-            if (Lat > 90) {
-                Lat -= 180;
-            } else if (Lat < -90) {
-                Lat += 180;
-            }
-            w = $("#screen").width();
-            h = $("#screen").height();
-            Lat = (h / 2) + ((Lat / 90) * (h / 2));
-            Lon = (w / 2) + ((Lon / 180) * (w / 2));
+           
+            Lat = (Lats % 150)+150;
+            Lon = (Lons % (75))+75;
             $("#latt").text("lat:" + Lats);
             $("#lonn").text("lon:" + Lons);
-            $("#plain").css({ 'left': Lon + 'px', 'top': Lat + 'px' });
+            $("#thr").text("throttle:" + thr);
+            $("#rudder").text("rudder:" + rad);
+            drawPlane(Lat, Lon);
         }
     </script>
-    <img src="~/Content/plain.png" id="plain"/>
+
+    <script>
+        var old_x = -1;
+        var old_y = 0;
+        function drawPlane(x, y) {
+            var c = document.getElementById("myCanvas");
+            var ctx = c.getContext("2d");
+            if (old_x != -1) {//first arg
+                ctx.moveTo(old_x, old_y);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
+            old_y = y;
+            old_x = x;
+            ctx.beginPath();
+            ctx.arc(x, y, 1, 0, 2 * Math.PI);
+            ctx.fillStyle = "red";
+            ctx.fill();
+        }
+
+    </script>
     <div id="param">
         <p type="text" id="latt"></p>
         <p type="text" id="lonn"></p>
@@ -107,15 +120,12 @@
 
 
 
-
     <div id="mydiv">
-        <a href="http://localhost:26111/">HOME</a><br />
-        <a href="http://localhost:26111/display/127.0.0.1/5400/1">show Locations real</a><br />
-        <a href="http://localhost:26111/display/127.0.0.1/5400">show one Location real</a><br />
-        <a href="http://localhost:26111/save/127.0.0.1/5400/1/5/myFile">save real</a><br />
-        <a href="http://localhost:26111/display/123/5400/1">show Locations dummy</a><br />
-        <a href="http://localhost:26111/display/myFile/1">play</a><br />
-        <a href="http://localhost:26111/save/123/5400/1/5/myFile">save dummy</a><br />
+        <a href="http://localhost:26111/">HOME</a>
+        <a href="http://localhost:26111/display/127.0.0.1/5400/1">show Locations</a>
+        <a href="http://localhost:26111/display/127.0.0.1/5400">show one Location</a>
+        <a href="http://localhost:26111/save/127.0.0.1/5400/1/20/myFile">save </a>
+        <a href="http://localhost:26111/display/myFile/1">play</a>
     </div>
 
 </body>

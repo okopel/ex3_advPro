@@ -7,9 +7,14 @@
     myTimer = (function () {
         $.post("@Url.Action("GetArgs")").done(function (xml) {
             get(xml);
+            $.post("@Url.Action("closeClient")").done();
         });
     });
+
+
+    
     myTimer();
+    
 
 </script>
 

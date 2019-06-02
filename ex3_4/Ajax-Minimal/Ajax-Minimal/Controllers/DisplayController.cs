@@ -1,12 +1,6 @@
 ﻿using Ex3.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Web;
 using System.Web.Mvc;
-using System.Xml;
 
 namespace Ex3.Controllers
 {
@@ -19,23 +13,24 @@ namespace Ex3.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpGet] // show dynamic location Action
         public ActionResult showLocations(string ip, int port, int time)
         {
             InfoModel i = InfoModel.Instance;
             i.ip = ip;
             i.port = port;
-            i.time = time;
             i.client.openClient();
             Session["time"] = time;
             return View();
         }
-        [HttpGet]
+
+        [HttpGet] // show one location or load Actions
         public ActionResult showOneLocation(string ip, int port)
         {
             InfoModel i = InfoModel.Instance;//todo check if already connected but another ip
             IPAddress d;
-            if (!IPAddress.TryParse(ip, out d)) //play from file case
+            // Check if action is ShowOneLocation or load
+            if (!IPAddress.TryParse(ip, out d)) // Load case
             {
                 Session["time"] = port;
                 i.fileName = ip;
@@ -50,19 +45,25 @@ namespace Ex3.Controllers
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] // get data from simulator - return XML file
         public string GetArgs()
         {
-
             return InfoModel.Instance.client.getArgs(false);
         }
 
-        [HttpPost]
+        [HttpPost] // close client Action
+        public void closeClient()
+        {
+            InfoModel.Instance.client.close();
+        }
+
+        [HttpPost] // read one arg from saved XML file
         public string GetOneArg()
         {
             return InfoModel.Instance.getOneArg();
         }
-        [HttpPost]
+
+        [HttpPost] // close the reader of the saved XML file
         public void closeReader()
         {
             InfoModel.Instance.closeReader();

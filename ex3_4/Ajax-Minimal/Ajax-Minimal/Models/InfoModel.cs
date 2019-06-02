@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Web;
 using System.Xml;
 
@@ -25,44 +21,20 @@ namespace Ex3.Models
         }
         #endregion
         public Client client { get; private set; }
-        private string _ip;
-        public string ip
-        {
-            get
-            {
-                return _ip;
-            }
-            set
-            {
-                if (value != _ip)
-                {
-                    closeReader();
-                    closeXml();
-                    client.close();
-                    _ip = value;
-
-                }
-            }
-        }
+        public string ip { get; set; }
         private int _port;
-        public int port
-        {
-            get { return _port; }
+        public int port { get { return _port; }
             set
             {
+                //reopen client by changing port
                 if (_port != value)
                 {
-                    closeReader();
-                    closeXml();
-                    client.close();
-                    _port = value;
-
+                    this.client.close();
+                    this._port = value;
+                    this.client.openClient();
                 }
             }
-
         }
-        public int time { get; set; }
-        public int len { get; set; }
         private string _fileName;
         public string fileName
         {
@@ -89,7 +61,7 @@ namespace Ex3.Models
             xmlReader = null;
         }
 
-
+        // open XML writer
         public void initionXml(string fileName)
         {
             closeXml();
@@ -99,12 +71,17 @@ namespace Ex3.Models
             xmlWriter.WriteStartElement("myData");
 
         }
+
+
+        // open XML reader
         public void initionXmlReader()
         {
             closeReader();
             string path = HttpContext.Current.Server.MapPath("~/App_Data/" + fileName + ".xml");
             xmlReader = new XmlTextReader(path);
         }
+
+        // close XML file
         public void closeXml()
         {
             if (xmlWriter != null)
@@ -115,19 +92,23 @@ namespace Ex3.Models
                 xmlWriter = null;
             }
         }
-        public void addToXml(double lat, double lon, double throttle, double rudder)
+
+
+        // add entry to XML file
+        public void addToXml(string lat, string lon, string throttle, string rudder)
         {
             if (xmlWriter != null)
             {
                 xmlWriter.WriteStartElement("arg");
-                xmlWriter.WriteElementString("lat", lat.ToString());
-                xmlWriter.WriteElementString("lon", lon.ToString());
-                xmlWriter.WriteElementString("throttle", throttle.ToString());
-                xmlWriter.WriteElementString("rudder", rudder.ToString());
+                xmlWriter.WriteElementString("lat", lat);
+                xmlWriter.WriteElementString("lon", lon);
+                xmlWriter.WriteElementString("throttle", throttle);
+                xmlWriter.WriteElementString("rudder", rudder);
                 xmlWriter.WriteEndElement();
             }
         }
 
+        // close reader
         public void closeReader()
         {
             if (xmlReader != null)
@@ -136,6 +117,9 @@ namespace Ex3.Models
                 this.xmlReader = null;
             }
         }
+
+
+        // read one entry from XML file
         public bool readOneArg(XmlWriter writer)
         {
             if (writer == null)
@@ -180,6 +164,7 @@ namespace Ex3.Models
             return true;
         }
 
+        // // read one entry from server
         public string getOneArg()
         {
             StringBuilder sb = new StringBuilder();
@@ -196,7 +181,6 @@ namespace Ex3.Models
                 return sb.ToString();
             }
             return null;
-
         }
     }
 }
